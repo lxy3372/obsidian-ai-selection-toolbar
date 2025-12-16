@@ -3,7 +3,7 @@
   "name": "AI Selection Toolbar",
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
-  "description": "AI-powered toolbar for selected text with TTS, translation, explanation, and word recognition features",
+  "description": "AI-powered toolbar for selected text with TTS, translation, explanation, and word recognition features.",
   "author": "rikyliu",
   "authorUrl": "https://github.com/lxy3372",
   "isDesktopOnly": true
