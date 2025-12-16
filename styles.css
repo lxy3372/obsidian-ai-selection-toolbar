@@ -1,0 +1,274 @@
+/* Text Hover Menu */
+.text-hover-menu {
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: max-content;
+    max-width: 800px;
+}
+
+/* Drag Handle */
+.text-hover-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 28px;
+    cursor: move;
+    color: var(--text-muted);
+    user-select: none;
+    flex-shrink: 0;
+    border-right: 1px solid var(--background-modifier-border);
+    margin-right: 2px;
+}
+
+.text-hover-drag-handle:hover {
+    color: var(--text-normal);
+    background: var(--background-modifier-hover);
+}
+
+.text-hover-drag-handle svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Button Container */
+.text-hover-buttons {
+    display: flex;
+    gap: 4px;
+    padding: 2px;
+    flex-wrap: nowrap;
+    overflow-x: visible;
+}
+
+/* Button Wrapper */
+.text-hover-button-wrapper {
+    display: inline-block;
+}
+
+/* Button Styles */
+.text-hover-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 4px 8px;
+    height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+/* Button Icon */
+.text-hover-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Button Label */
+.text-hover-label {
+    font-size: 12px;
+    font-weight: 500;
+    user-select: none;
+}
+
+.text-hover-button:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+}
+
+.text-hover-button.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.text-hover-button.playing {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+}
+
+.text-hover-button.active {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+}
+
+/* Actions 区域的按钮样式（无文字标签） */
+.text-hover-actions .text-hover-button {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    gap: 0;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Result Panel */
+.text-hover-result-panel {
+    border-top: 1px solid var(--background-modifier-border);
+    padding: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading Indicator */
+.text-hover-loading {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 20px;
+}
+
+/* Content Area */
+.text-hover-content {
+    color: var(--text-normal);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Actions */
+.text-hover-actions {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+    padding-top: 8px;
+    border-top: 1px solid var(--background-modifier-border);
+}
+
+/* Scrollbar Styling */
+.text-hover-result-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.text-hover-result-panel::-webkit-scrollbar-track {
+    background: var(--background-secondary);
+    border-radius: 4px;
+}
+
+.text-hover-result-panel::-webkit-scrollbar-thumb {
+    background: var(--background-modifier-border);
+    border-radius: 4px;
+}
+
+.text-hover-result-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Dark Mode Adjustments */
+.theme-dark .text-hover-menu {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Word Recognition Styles */
+.text-hover-phonetic-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: var(--background-secondary);
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.text-hover-pronounce-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 50%;
+    background: var(--interactive-accent);
+    transition: all 0.2s;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.text-hover-pronounce-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.text-hover-pronounce-button:active {
+    transform: scale(0.95);
+}
+
+.text-hover-word-phonetic-container {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.text-hover-word-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-normal);
+}
+
+.text-hover-phonetic-text {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    font-family: 'Courier New', monospace;
+}
+
+.text-hover-examples-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.text-hover-examples-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.text-hover-example-item {
+    padding: 8px 12px;
+    background: var(--background-secondary);
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-normal);
+    border-left: 3px solid var(--interactive-accent);
+}
+
+.text-hover-example-item:hover {
+    background: var(--background-modifier-hover);
+}
