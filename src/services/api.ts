@@ -1,15 +1,15 @@
 import { Notice, requestUrl } from 'obsidian';
-import type { TextHoverSettings, AIMessage, AIResponse } from './types';
-import { t } from './i18n';
+import type { AISelectionToolbarSettings, AIMessage, AIResponse } from '../types/types';
+import { t } from '../utils/i18n';
 
 export class APIHandler {
-    private settings: TextHoverSettings;
+    private settings: AISelectionToolbarSettings;
 
-    constructor(settings: TextHoverSettings) {
+    constructor(settings: AISelectionToolbarSettings) {
         this.settings = settings;
     }
 
-    updateSettings(settings: TextHoverSettings) {
+    updateSettings(settings: AISelectionToolbarSettings) {
         this.settings = settings;
     }
 
@@ -41,9 +41,6 @@ export class APIHandler {
             }
             
             const url = `${baseUrl}?${existingParams.toString()}`;
-            
-            // 打印完整的 API 请求地址
-            console.log('🔊 TTS API Request URL:', url);
             
             // 构建请求头
             const headers: Record<string, string> = {
@@ -342,9 +339,7 @@ export class BrowserTTSPlayer {
 
             this.utterance.onerror = (event) => {
                 // 如果是主动停止触发的错误（如 canceled），则不显示错误提示
-                if (this.isManuallyStopped || event.error === 'canceled' || event.error === 'interrupted') {
-                    console.log('Browser TTS stopped by user');
-                } else {
+                if (!this.isManuallyStopped && event.error !== 'canceled' && event.error !== 'interrupted') {
                     console.error('Browser TTS Error:', event);
                     new Notice(t('browserTtsFailed'));
                 }

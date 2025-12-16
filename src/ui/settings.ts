@@ -1,12 +1,12 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
-import type TextHoverAssistantPlugin from './main';
-import { LANGUAGE_OPTIONS } from './types';
-import { t } from './i18n';
+import type AISelectionToolbarPlugin from '../core/main';
+import { LANGUAGE_OPTIONS } from '../types/types';
+import { t } from '../utils/i18n';
 
-export class TextHoverSettingTab extends PluginSettingTab {
-    plugin: TextHoverAssistantPlugin;
+export class AISelectionToolbarSettingTab extends PluginSettingTab {
+    plugin: AISelectionToolbarPlugin;
 
-    constructor(app: App, plugin: TextHoverAssistantPlugin) {
+    constructor(app: App, plugin: AISelectionToolbarPlugin) {
         super(app, plugin);
         this.plugin = plugin;
     }

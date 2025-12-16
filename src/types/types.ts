@@ -1,4 +1,4 @@
-export interface TextHoverSettings {
+export interface AISelectionToolbarSettings {
     // Feature Toggles
     enableTTS: boolean;
     enableTranslate: boolean;
@@ -30,7 +30,7 @@ export interface TextHoverSettings {
     };
 }
 
-export const DEFAULT_SETTINGS: TextHoverSettings = {
+export const DEFAULT_SETTINGS: AISelectionToolbarSettings = {
     // Feature Toggles
     enableTTS: true,
     enableTranslate: true,

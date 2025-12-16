@@ -1,13 +1,13 @@
 import { Plugin, MarkdownView, Notice } from 'obsidian';
 import { ViewPlugin, ViewUpdate, EditorView } from '@codemirror/view';
-import type { TextHoverSettings } from './types';
-import { DEFAULT_SETTINGS } from './types';
-import { TextHoverSettingTab } from './settings';
-import { APIHandler, AudioPlayer, BrowserTTSPlayer } from './api';
-import { t } from './i18n';
+import type { AISelectionToolbarSettings } from '../types/types';
+import { DEFAULT_SETTINGS } from '../types/types';
+import { AISelectionToolbarSettingTab } from '../ui/settings';
+import { APIHandler, AudioPlayer, BrowserTTSPlayer } from '../services/api';
+import { t } from '../utils/i18n';
 
-export default class TextHoverAssistantPlugin extends Plugin {
-    settings: TextHoverSettings;
+export default class AISelectionToolbarPlugin extends Plugin {
+    settings: AISelectionToolbarSettings;
     private apiHandler: APIHandler;
     private audioPlayer: AudioPlayer;
     private browserTTSPlayer: BrowserTTSPlayer;
@@ -28,7 +28,7 @@ export default class TextHoverAssistantPlugin extends Plugin {
         this.browserTTSPlayer = new BrowserTTSPlayer();
 
         // 添加设置页面
-        this.addSettingTab(new TextHoverSettingTab(this.app, this));
+        this.addSettingTab(new AISelectionToolbarSettingTab(this.app, this));
 
         // 注册 CodeMirror 扩展
         this.registerEditorExtension(this.createSelectionExtension());
@@ -40,15 +40,12 @@ export default class TextHoverAssistantPlugin extends Plugin {
                 this.hideHoverMenu();
             }
         });
-
-        console.log('AI Selection Toolbar Plugin loaded');
     }
 
     onunload() {
         this.hideHoverMenu();
         this.audioPlayer.dispose();
         this.browserTTSPlayer.dispose();
-        console.log('AI Selection Toolbar Plugin unloaded');
     }
 
     async loadSettings() {
