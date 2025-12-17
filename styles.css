@@ -10,6 +10,12 @@
     gap: 6px;
     width: max-content;
     max-width: 800px;
+    position: absolute;
+    z-index: 1000;
+}
+
+.text-hover-menu.positioned {
+    transform: translateX(-50%);
 }
 
 /* Drag Handle */
@@ -271,4 +277,46 @@
 
 .text-hover-example-item:hover {
     background: var(--background-modifier-hover);
+}
+
+/* Utility classes for dynamic positioning */
+.text-hover-hidden {
+    display: none !important;
+}
+
+.text-hover-visible {
+    display: block !important;
+}
+
+.text-hover-inline-visible {
+    display: inline !important;
+}
+
+/* Chat bubble styles */
+.text-hover-chat-bubble {
+    width: 250px;
+    padding: 12px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 12px;
+    background-color: var(--background-secondary);
+    color: var(--text-normal);
+}
+
+/* Settings page custom input styles */
+.ai-toolbar-custom-input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    background-color: var(--background-primary);
+    color: var(--text-normal);
+}
+
+.ai-toolbar-custom-container {
+    margin-top: 8px;
+    margin-left: 0;
+}
+
+.ai-toolbar-full-width-input {
+    width: 100%;
 }

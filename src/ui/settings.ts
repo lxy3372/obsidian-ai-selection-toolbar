@@ -16,7 +16,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
         containerEl.empty();
 
         // === Feature Toggles ===
-        containerEl.createEl('h2', { text: t('featureToggles') });
+        new Setting(containerEl).setName("").setHeading();
 
         new Setting(containerEl)
             .setName(t('enableTTS'))
@@ -69,7 +69,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
                 }));
 
         // === TTS Settings ===
-        containerEl.createEl('h2', { text: t('ttsSettings') });
+        new Setting(containerEl).setName("").setHeading();
 
         new Setting(containerEl)
             .setName(t('ttsProvider'))
@@ -153,7 +153,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
                             this.plugin.settings.tts.apiUrl = value;
                             await this.plugin.saveSettings();
                         });
-                    text.inputEl.style.width = '100%';
+                    text.inputEl.addClass('ai-toolbar-full-width-input');
                 });
 
             new Setting(containerEl)
@@ -179,7 +179,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
                             this.plugin.settings.tts.voiceParams = value;
                             await this.plugin.saveSettings();
                         });
-                    text.inputEl.style.width = '100%';
+                    text.inputEl.addClass('ai-toolbar-full-width-input');
                 });
 
             new Setting(containerEl)
@@ -196,7 +196,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
         }
 
         // === AI Settings ===
-        containerEl.createEl('h2', { text: t('aiSettings') });
+        new Setting(containerEl).setName("").setHeading();
 
         new Setting(containerEl)
             .setName(t('aiApiUrl'))
@@ -234,7 +234,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
                 }));
 
         // === Translation Settings ===
-        containerEl.createEl('h3', { text: t('translation') });
+        new Setting(containerEl).setName("").setHeading();
 
         // 创建语言选择 Setting（下拉框 + 文本框组合）
         new Setting(containerEl)
@@ -257,10 +257,10 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
                         this.plugin.settings.ai.translateTargetLanguage = value;
                         await this.plugin.saveSettings();
                         // 隐藏自定义输入框
-                        customTextContainer.style.display = 'none';
+                        customTextContainer.addClass('text-hover-hidden');
                     } else {
                         // 显示自定义输入框
-                        customTextContainer.style.display = 'block';
+                        customTextContainer.removeClass('text-hover-hidden');
                         customInput.focus();
                     }
                 });
@@ -269,25 +269,18 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             });
 
         // 创建自定义语言输入框容器
-        const customTextContainer = containerEl.createDiv('setting-item-description');
-        customTextContainer.style.marginTop = '8px';
-        customTextContainer.style.marginLeft = '0';
+        const customTextContainer = containerEl.createDiv('setting-item-description ai-toolbar-custom-container');
         
         const customInput = customTextContainer.createEl('input', {
             type: 'text',
             placeholder: 'Enter custom language...',
+            cls: 'ai-toolbar-custom-input',
             value: (() => {
                 const currentValue = this.plugin.settings.ai.translateTargetLanguage;
                 const isPreset = LANGUAGE_OPTIONS.some(opt => opt.value === currentValue);
                 return isPreset ? '' : currentValue;
             })()
         });
-        customInput.style.width = '100%';
-        customInput.style.padding = '4px 8px';
-        customInput.style.border = '1px solid var(--background-modifier-border)';
-        customInput.style.borderRadius = '4px';
-        customInput.style.backgroundColor = 'var(--background-primary)';
-        customInput.style.color = 'var(--text-normal)';
         
         customInput.addEventListener('input', async (e) => {
             const target = e.target as HTMLInputElement;
@@ -298,7 +291,9 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
         // 初始化时检查是否显示自定义输入框
         const currentValue = this.plugin.settings.ai.translateTargetLanguage;
         const isPreset = LANGUAGE_OPTIONS.some(opt => opt.value === currentValue);
-        customTextContainer.style.display = isPreset ? 'none' : 'block';
+        if (isPreset) {
+            customTextContainer.addClass('text-hover-hidden');
+        }
 
         new Setting(containerEl)
             .setName(t('translationPromptTemplate'))
@@ -314,7 +309,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             });
 
         // === Explanation Settings ===
-        containerEl.createEl('h3', { text: t('explanation') });
+        new Setting(containerEl).setName("").setHeading();
 
         // 创建解释语言选择 Setting（下拉框 + 文本框组合）
         new Setting(containerEl)
@@ -337,10 +332,10 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
                         this.plugin.settings.ai.explainOutputLanguage = value;
                         await this.plugin.saveSettings();
                         // 隐藏自定义输入框
-                        explainCustomTextContainer.style.display = 'none';
+                        explainCustomTextContainer.addClass('text-hover-hidden');
                     } else {
                         // 显示自定义输入框
-                        explainCustomTextContainer.style.display = 'block';
+                        explainCustomTextContainer.removeClass('text-hover-hidden');
                         explainCustomInput.focus();
                     }
                 });
@@ -349,25 +344,18 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             });
 
         // 创建自定义语言输入框容器
-        const explainCustomTextContainer = containerEl.createDiv('setting-item-description');
-        explainCustomTextContainer.style.marginTop = '8px';
-        explainCustomTextContainer.style.marginLeft = '0';
+        const explainCustomTextContainer = containerEl.createDiv('setting-item-description ai-toolbar-custom-container');
         
         const explainCustomInput = explainCustomTextContainer.createEl('input', {
             type: 'text',
             placeholder: 'Enter custom language...',
+            cls: 'ai-toolbar-custom-input',
             value: (() => {
                 const currentValue = this.plugin.settings.ai.explainOutputLanguage;
                 const isPreset = LANGUAGE_OPTIONS.some(opt => opt.value === currentValue);
                 return isPreset ? '' : currentValue;
             })()
         });
-        explainCustomInput.style.width = '100%';
-        explainCustomInput.style.padding = '4px 8px';
-        explainCustomInput.style.border = '1px solid var(--background-modifier-border)';
-        explainCustomInput.style.borderRadius = '4px';
-        explainCustomInput.style.backgroundColor = 'var(--background-primary)';
-        explainCustomInput.style.color = 'var(--text-normal)';
         
         explainCustomInput.addEventListener('input', async (e) => {
             const target = e.target as HTMLInputElement;
@@ -378,7 +366,9 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
         // 初始化时检查是否显示自定义输入框
         const explainCurrentValue = this.plugin.settings.ai.explainOutputLanguage;
         const explainIsPreset = LANGUAGE_OPTIONS.some(opt => opt.value === explainCurrentValue);
-        explainCustomTextContainer.style.display = explainIsPreset ? 'none' : 'block';
+        if (explainIsPreset) {
+            explainCustomTextContainer.addClass('text-hover-hidden');
+        }
 
         new Setting(containerEl)
             .setName(t('explanationPromptTemplate'))
@@ -394,7 +384,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             });
 
         // === Summary Settings ===
-        containerEl.createEl('h3', { text: t('summary') });
+        new Setting(containerEl).setName("").setHeading();
 
         // 创建总结语言选择 Setting（下拉框 + 文本框组合）
         new Setting(containerEl)
@@ -417,10 +407,10 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
                         this.plugin.settings.ai.summaryOutputLanguage = value;
                         await this.plugin.saveSettings();
                         // 隐藏自定义输入框
-                        summaryCustomTextContainer.style.display = 'none';
+                        summaryCustomTextContainer.addClass('text-hover-hidden');
                     } else {
                         // 显示自定义输入框
-                        summaryCustomTextContainer.style.display = 'block';
+                        summaryCustomTextContainer.removeClass('text-hover-hidden');
                         summaryCustomInput.focus();
                     }
                 });
@@ -429,25 +419,18 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             });
 
         // 创建自定义语言输入框容器
-        const summaryCustomTextContainer = containerEl.createDiv('setting-item-description');
-        summaryCustomTextContainer.style.marginTop = '8px';
-        summaryCustomTextContainer.style.marginLeft = '0';
+        const summaryCustomTextContainer = containerEl.createDiv('setting-item-description ai-toolbar-custom-container');
         
         const summaryCustomInput = summaryCustomTextContainer.createEl('input', {
             type: 'text',
             placeholder: 'Enter custom language...',
+            cls: 'ai-toolbar-custom-input',
             value: (() => {
                 const currentValue = this.plugin.settings.ai.summaryOutputLanguage;
                 const isPreset = LANGUAGE_OPTIONS.some(opt => opt.value === currentValue);
                 return isPreset ? '' : currentValue;
             })()
         });
-        summaryCustomInput.style.width = '100%';
-        summaryCustomInput.style.padding = '4px 8px';
-        summaryCustomInput.style.border = '1px solid var(--background-modifier-border)';
-        summaryCustomInput.style.borderRadius = '4px';
-        summaryCustomInput.style.backgroundColor = 'var(--background-primary)';
-        summaryCustomInput.style.color = 'var(--text-normal)';
         
         summaryCustomInput.addEventListener('input', async (e) => {
             const target = e.target as HTMLInputElement;
@@ -458,7 +441,9 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
         // 初始化时检查是否显示自定义输入框
         const summaryCurrentValue = this.plugin.settings.ai.summaryOutputLanguage;
         const summaryIsPreset = LANGUAGE_OPTIONS.some(opt => opt.value === summaryCurrentValue);
-        summaryCustomTextContainer.style.display = summaryIsPreset ? 'none' : 'block';
+        if (summaryIsPreset) {
+            summaryCustomTextContainer.addClass('text-hover-hidden');
+        }
 
         new Setting(containerEl)
             .setName(t('summaryPromptTemplate'))
@@ -474,7 +459,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             });
 
         // === Word Recognition Settings ===
-        containerEl.createEl('h2', { text: t('wordRecognition') });
+        new Setting(containerEl).setName("").setHeading();
 
         new Setting(containerEl)
             .setName(t('wordRecognitionPromptTemplate'))

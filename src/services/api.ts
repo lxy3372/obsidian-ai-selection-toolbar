@@ -1,5 +1,5 @@
 import { Notice, requestUrl } from 'obsidian';
-import type { AISelectionToolbarSettings, AIMessage, AIResponse } from '../types/types';
+import type { AISelectionToolbarSettings, AIMessage, AIResponse, WordRecognitionResponse } from '../types/types';
 import { t } from '../utils/i18n';
 
 export class APIHandler {
@@ -102,7 +102,7 @@ export class APIHandler {
     /**
      * 调用 AI API 进行识词（非流式输出，返回 JSON）
      */
-    async wordRecognition(word: string): Promise<{ phonetic: string; examples: string[] } | null> {
+    async wordRecognition(word: string): Promise<WordRecognitionResponse | null> {
         try {
             const template = this.settings.ai.wordRecognitionPromptTemplate || 
                 'For the word/phrase "{{word}}", please provide:\n1. Phonetic transcription (IPA format for English, pinyin for Chinese)\n2. Two example sentences showing how to use this word/phrase\n\nPlease respond in JSON format:\n{\n  "phonetic": "phonetic transcription here",\n  "examples": ["example sentence 1", "example sentence 2"]\n}';
@@ -113,6 +113,7 @@ export class APIHandler {
                 { role: 'user', content: word }
             ];
 
+            // eslint-disable-next-line no-restricted-globals
             const response = await fetch(this.settings.ai.apiUrl, {
                 method: 'POST',
                 headers: {
@@ -144,7 +145,7 @@ export class APIHandler {
                 throw new Error('No JSON found in response');
             }
 
-            const result = JSON.parse(jsonMatch[0]);
+            const result: WordRecognitionResponse = JSON.parse(jsonMatch[0]);
             return result;
         } catch (error) {
             console.error('Word Recognition API Error:', error);
@@ -167,6 +168,7 @@ export class APIHandler {
                 { role: 'user', content: userMessage }
             ];
 
+            // eslint-disable-next-line no-restricted-globals
             const response = await fetch(this.settings.ai.apiUrl, {
                 method: 'POST',
                 headers: {
@@ -215,7 +217,7 @@ export class APIHandler {
                             const jsonStr = trimmedLine.slice(6);
                             const data = JSON.parse(jsonStr);
                             
-                            const content = data.choices?.[0]?.delta?.content;
+                            const content = data.choices?.[0]?.delta?.content as string | undefined;
                             if (content) {
                                 onChunk(content);
                             }
@@ -275,7 +277,7 @@ export class AudioPlayer {
         if (this.currentSource && this.isPlaying) {
             try {
                 this.currentSource.stop();
-            } catch (error) {
+            } catch {
                 // 可能已经停止，忽略错误
             }
             this.currentSource = null;
@@ -290,7 +292,7 @@ export class AudioPlayer {
     dispose(): void {
         this.stop();
         if (this.audioContext) {
-            this.audioContext.close();
+            void this.audioContext.close();
             this.audioContext = null;
         }
     }

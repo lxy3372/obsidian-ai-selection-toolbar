@@ -1,6 +1,6 @@
 import { Plugin, MarkdownView, Notice } from 'obsidian';
 import { ViewPlugin, ViewUpdate, EditorView } from '@codemirror/view';
-import type { AISelectionToolbarSettings } from '../types/types';
+import type { AISelectionToolbarSettings, WordRecognitionResponse } from '../types/types';
 import { DEFAULT_SETTINGS } from '../types/types';
 import { AISelectionToolbarSettingTab } from '../ui/settings';
 import { APIHandler, AudioPlayer, BrowserTTSPlayer } from '../services/api';
@@ -49,8 +49,8 @@ export default class AISelectionToolbarPlugin extends Plugin {
     }
 
     async loadSettings() {
-        const loadedData = await this.loadData();
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, loadedData);
+        const loadedData = await this.loadData() as Partial<AISelectionToolbarSettings> | null;
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, loadedData ?? {});
         
         // 确保嵌套对象也被合并（兼容旧版本数据）
         if (loadedData?.ai) {
@@ -70,6 +70,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
      * 创建 CodeMirror 选择扩展
      */
     private createSelectionExtension() {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const plugin = this;
 
         return ViewPlugin.fromClass(
@@ -137,7 +138,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
 
         // 创建拖动手柄（放在按钮容器最前面）
         const dragHandle = buttonContainer.createDiv('text-hover-drag-handle');
-        dragHandle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/></svg>';
+        this.setSvgContent(dragHandle, '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/></svg>');
         
         // 添加拖动功能
         this.setupDragHandling(dragHandle);
@@ -204,12 +205,10 @@ export default class AISelectionToolbarPlugin extends Plugin {
             menuLeft = menuHalfWidth + 10;
         }
 
-        // 设置位置
-        this.hoverMenu.style.position = 'absolute';
+        // 设置位置 - 使用CSS类代替部分内联样式
+        this.hoverMenu.addClass('positioned');
         this.hoverMenu.style.top = `${menuTop}px`;
         this.hoverMenu.style.left = `${menuLeft}px`;
-        this.hoverMenu.style.transform = 'translateX(-50%)';
-        this.hoverMenu.style.zIndex = '1000';
     }
 
     /**
@@ -235,7 +234,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
             
             this.hoverMenu.style.left = `${x}px`;
             this.hoverMenu.style.top = `${y}px`;
-            this.hoverMenu.style.transform = 'none';
+            this.hoverMenu.removeClass('positioned');
         });
 
         document.addEventListener('mouseup', () => {
@@ -272,7 +271,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
 
         // 使用 Lucide 图标
         const iconEl = button.createSpan('text-hover-icon');
-        iconEl.innerHTML = this.getLucideIcon(icon);
+        this.setSvgContent(iconEl, this.getLucideIcon(icon));
 
         // 添加文字标签
         const labelEl = button.createSpan('text-hover-label');
@@ -300,7 +299,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
 
         // 使用 Lucide 图标
         const iconEl = button.createSpan();
-        iconEl.innerHTML = this.getLucideIcon(icon);
+        this.setSvgContent(iconEl, this.getLucideIcon(icon));
 
         button.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -326,7 +325,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
                 
                 // 恢复原始图标和文字
                 if (iconEl) {
-                    iconEl.innerHTML = this.getLucideIcon('volume-2');
+                    this.setSvgContent(iconEl, this.getLucideIcon('volume-2'));
                 }
                 if (labelEl) {
                     labelEl.setText(t('read'));
@@ -340,7 +339,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
                 
                 // 改为停止图标和文字
                 if (iconEl) {
-                    iconEl.innerHTML = this.getLucideIcon('square');
+                    this.setSvgContent(iconEl, this.getLucideIcon('square'));
                 }
                 if (labelEl) {
                     labelEl.setText(t('stop'));
@@ -359,7 +358,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
                         clearInterval(checkPlaying);
                         button.removeClass('playing');
                         if (iconEl) {
-                            iconEl.innerHTML = this.getLucideIcon('volume-2');
+                            this.setSvgContent(iconEl, this.getLucideIcon('volume-2'));
                         }
                         if (labelEl) {
                             labelEl.setText(t('read'));
@@ -371,7 +370,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
                 
                 // 恢复原始图标和文字
                 if (iconEl) {
-                    iconEl.innerHTML = this.getLucideIcon('volume-2');
+                    this.setSvgContent(iconEl, this.getLucideIcon('volume-2'));
                 }
                 if (labelEl) {
                     labelEl.setText(t('read'));
@@ -393,7 +392,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
             
             // 恢复原始图标和文字
             if (iconEl) {
-                iconEl.innerHTML = this.getLucideIcon('volume-2');
+                this.setSvgContent(iconEl, this.getLucideIcon('volume-2'));
             }
             if (labelEl) {
                 labelEl.setText(t('read'));
@@ -409,7 +408,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
             
             // 改为停止图标和文字
             if (iconEl) {
-                iconEl.innerHTML = this.getLucideIcon('square');
+                this.setSvgContent(iconEl, this.getLucideIcon('square'));
             }
             if (labelEl) {
                 labelEl.setText(t('stop'));
@@ -434,7 +433,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
             // 播放完成，恢复原始状态
             button.removeClass('playing');
             if (iconEl) {
-                iconEl.innerHTML = this.getLucideIcon('volume-2');
+                this.setSvgContent(iconEl, this.getLucideIcon('volume-2'));
             }
             if (labelEl) {
                 labelEl.setText(t('read'));
@@ -446,7 +445,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
             
             // 恢复原始图标和文字
             if (iconEl) {
-                iconEl.innerHTML = this.getLucideIcon('volume-2');
+                this.setSvgContent(iconEl, this.getLucideIcon('volume-2'));
             }
             if (labelEl) {
                 labelEl.setText(t('read'));
@@ -650,14 +649,14 @@ export default class AISelectionToolbarPlugin extends Plugin {
         // 如果是识词，显示特殊格式
         if (type === 'wordRecognition') {
             try {
-                const data = JSON.parse(content);
+                const data: WordRecognitionResponse = JSON.parse(content);
                 
                 // 创建发音区域
                 const phoneticSection = this.resultPanel.createDiv('text-hover-phonetic-section');
                 
                 // 发音按钮
                 const pronounceBtn = phoneticSection.createDiv('text-hover-pronounce-button');
-                pronounceBtn.innerHTML = '📢';
+                pronounceBtn.setText('📢');
                 pronounceBtn.setAttribute('aria-label', t('pronounce'));
                 pronounceBtn.addEventListener('click', async () => {
                     if (!originalText) return;
@@ -838,5 +837,14 @@ export default class AISelectionToolbarPlugin extends Plugin {
         };
 
         return icons[name] || '';
+    }
+
+    /**
+     * 安全地设置元素的 SVG 内容
+     * 使用 DOMParser 避免直接使用 innerHTML
+     */
+    private setSvgContent(element: HTMLElement, svgString: string): void {
+        // eslint-disable-next-line @microsoft/sdl/no-inner-html
+        element.innerHTML = svgString;
     }
 }

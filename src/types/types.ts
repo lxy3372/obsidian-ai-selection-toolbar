@@ -80,6 +80,11 @@ export interface AIResponse {
     }>;
 }
 
+export interface WordRecognitionResponse {
+    phonetic: string;
+    examples: string[];
+}
+
 // 预定义的语言选项
 export const LANGUAGE_OPTIONS = [
     { value: '中文', label: '中文 (Chinese)' },
