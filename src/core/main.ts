@@ -16,7 +16,6 @@ export default class AISelectionToolbarPlugin extends Plugin {
     private debounceTimer: number | null = null;
     private isDragging = false;
     private dragOffset = { x: 0, y: 0 };
-    private currentTTSButton: HTMLElement | null = null;
     private isLoadingTTS = false;
 
     async onload() {
@@ -70,14 +69,17 @@ export default class AISelectionToolbarPlugin extends Plugin {
      * 创建 CodeMirror 选择扩展
      */
     private createSelectionExtension() {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const plugin = this;
+        // Arrow function methods to avoid this-alias issues
+        const hideHoverMenu = this.hideHoverMenu.bind(this);
+        const showHoverMenu = this.showHoverMenu.bind(this);
+        
+        let debounceTimer: number | null = null;
 
         return ViewPlugin.fromClass(
-            class {
+            class SelectionViewPlugin {
                 constructor(public view: EditorView) {}
 
-                update(update: ViewUpdate) {
+                update(update: ViewUpdate): void {
                     // 检查选区是否改变
                     if (!update.selectionSet) {
                         return;
@@ -87,24 +89,24 @@ export default class AISelectionToolbarPlugin extends Plugin {
                     const selectedText = update.state.sliceDoc(selection.from, selection.to);
 
                     // 清除之前的定时器
-                    if (plugin.debounceTimer) {
-                        window.clearTimeout(plugin.debounceTimer);
+                    if (debounceTimer) {
+                        window.clearTimeout(debounceTimer);
                     }
 
                     // 如果没有选中文本，隐藏菜单
                     if (!selectedText.trim()) {
-                        plugin.hideHoverMenu();
+                        hideHoverMenu();
                         return;
                     }
 
                     // 防抖：300ms 后显示菜单
-                    plugin.debounceTimer = window.setTimeout(() => {
-                        plugin.showHoverMenu(selectedText, selection.from, selection.to, update.view);
+                    debounceTimer = window.setTimeout(() => {
+                        showHoverMenu(selectedText, selection.from, selection.to, update.view);
                     }, 300);
                 }
 
-                destroy() {
-                    plugin.hideHoverMenu();
+                destroy(): void {
+                    hideHoverMenu();
                 }
             }
         );
@@ -145,36 +147,36 @@ export default class AISelectionToolbarPlugin extends Plugin {
 
         // 朗读按钮（仅在启用时显示）
         if (this.settings.enableTTS) {
-            const ttsButton = this.createButtonWithLabel(buttonContainer, 'volume-2', t('read'), async () => {
-                await this.handleTTS(selectedText, ttsButton);
+            const ttsButton = this.createButtonWithLabel(buttonContainer, 'volume-2', t('read'), () => {
+                void this.handleTTS(selectedText, ttsButton);
             });
         }
 
         // 翻译按钮（仅在启用时显示）
         if (this.settings.enableTranslate) {
-            const translateButton = this.createButtonWithLabel(buttonContainer, 'languages', t('translate'), async () => {
-                await this.handleTranslate(selectedText, translateButton);
+            const translateButton = this.createButtonWithLabel(buttonContainer, 'languages', t('translate'), () => {
+                void this.handleTranslate(selectedText, translateButton);
             });
         }
 
         // AI 搜索按钮（仅在启用时显示）
         if (this.settings.enableExplain) {
-            const explainButton = this.createButtonWithLabel(buttonContainer, 'search', t('aiSearch'), async () => {
-                await this.handleExplain(selectedText, explainButton);
+            const explainButton = this.createButtonWithLabel(buttonContainer, 'search', t('aiSearch'), () => {
+                void this.handleExplain(selectedText, explainButton);
             });
         }
 
         // 总结按钮（仅在启用时显示）
         if (this.settings.enableSummary) {
-            const summaryButton = this.createButtonWithLabel(buttonContainer, 'file-text', t('summarize'), async () => {
-                await this.handleSummary(selectedText, summaryButton);
+            const summaryButton = this.createButtonWithLabel(buttonContainer, 'file-text', t('summarize'), () => {
+                void this.handleSummary(selectedText, summaryButton);
             });
         }
 
         // 识词按钮（仅在启用时显示）
         if (this.settings.enableWordRecognition) {
-            const recognizeButton = this.createButtonWithLabel(buttonContainer, 'book-open', t('recognize'), async () => {
-                await this.handleWordRecognition(selectedText, recognizeButton);
+            const recognizeButton = this.createButtonWithLabel(buttonContainer, 'book-open', t('recognize'), () => {
+                void this.handleWordRecognition(selectedText, recognizeButton);
             });
         }
 
@@ -403,7 +405,6 @@ export default class AISelectionToolbarPlugin extends Plugin {
 
         try {
             this.isLoadingTTS = true;
-            this.currentTTSButton = button;
             button.addClass('loading');
             
             // 改为停止图标和文字
@@ -658,7 +659,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
                 const pronounceBtn = phoneticSection.createDiv('text-hover-pronounce-button');
                 pronounceBtn.setText('📢');
                 pronounceBtn.setAttribute('aria-label', t('pronounce'));
-                pronounceBtn.addEventListener('click', async () => {
+                pronounceBtn.addEventListener('click', () => {
                     if (!originalText) return;
                     
                     // 使用浏览器 TTS 朗读单词
@@ -693,7 +694,7 @@ export default class AISelectionToolbarPlugin extends Plugin {
                     });
                 } else {
                     const noExamples = examplesSection.createDiv('text-hover-example-item');
-                    noExamples.setText('No examples available');
+                    noExamples.setText(t('noExamples'));
                 }
             } catch (error) {
                 console.error('Failed to parse word recognition result:', error);
@@ -712,19 +713,21 @@ export default class AISelectionToolbarPlugin extends Plugin {
         // 如果是总结，显示特殊的按钮组
         if (type === 'summary') {
             // 刷新按钮
-            this.createButton(actionsEl, 'refresh-cw', t('refresh'), async () => {
+            this.createButton(actionsEl, 'refresh-cw', t('refresh'), () => {
                 if (originalText) {
-                    // 重新生成总结
-                    this.showResultPanel('loading', t('summarizing'));
-                    let fullContent = '';
-                    this.showResultPanel('summary', '', originalText);
-                    
-                    await this.apiHandler.summaryStream(originalText, (chunk: string) => {
-                        fullContent += chunk;
-                        this.updateResultContent(fullContent);
-                    });
-                    
-                    this.showResultPanel('summary', fullContent, originalText);
+                    void (async () => {
+                        // 重新生成总结
+                        this.showResultPanel('loading', t('summarizing'));
+                        let fullContent = '';
+                        this.showResultPanel('summary', '', originalText);
+                        
+                        await this.apiHandler.summaryStream(originalText, (chunk: string) => {
+                            fullContent += chunk;
+                            this.updateResultContent(fullContent);
+                        });
+                        
+                        this.showResultPanel('summary', fullContent, originalText);
+                    })();
                 }
             });
 
@@ -736,13 +739,13 @@ export default class AISelectionToolbarPlugin extends Plugin {
 
             // 复制按钮
             this.createButton(actionsEl, 'copy', t('copy'), () => {
-                navigator.clipboard.writeText(content);
+                void navigator.clipboard.writeText(content);
                 new Notice(t('copied'));
             });
         } else {
             // 复制按钮
             this.createButton(actionsEl, 'copy', t('copy'), () => {
-                navigator.clipboard.writeText(content);
+                void navigator.clipboard.writeText(content);
                 new Notice(t('copied'));
             });
 
@@ -841,10 +844,16 @@ export default class AISelectionToolbarPlugin extends Plugin {
 
     /**
      * 安全地设置元素的 SVG 内容
-     * 使用 DOMParser 避免直接使用 innerHTML
      */
     private setSvgContent(element: HTMLElement, svgString: string): void {
-        // eslint-disable-next-line @microsoft/sdl/no-inner-html
-        element.innerHTML = svgString;
+        // 使用 DOMParser 来安全地解析 SVG
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgString, 'image/svg+xml');
+        const svgElement = doc.documentElement;
+        
+        if (svgElement && svgElement.nodeName === 'svg') {
+            element.empty();
+            element.appendChild(svgElement);
+        }
     }
 }

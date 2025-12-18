@@ -92,7 +92,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
                 .setDesc(t('browserVoiceDesc'))
                 .addDropdown(dropdown => {
                     // 添加默认选项
-                    dropdown.addOption('', '默认语音 (Default)');
+                    dropdown.addOption('', t('customLanguage'));
                     
                     // 获取可用的语音列表
                     const voices = window.speechSynthesis.getVoices();
@@ -146,21 +146,21 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             new Setting(containerEl)
                 .setName(t('ttsApiUrl'))
                 .setDesc(t('ttsApiUrlDesc'))
-                .addText(text => {
-                    text.setPlaceholder('https://api.openai.com/v1/audio/speech')
-                        .setValue(this.plugin.settings.tts.apiUrl)
-                        .onChange(async (value) => {
-                            this.plugin.settings.tts.apiUrl = value;
-                            await this.plugin.saveSettings();
-                        });
-                    text.inputEl.addClass('ai-toolbar-full-width-input');
-                });
+            .addText(text => {
+                text.setPlaceholder(t('customLanguage'))
+                    .setValue(this.plugin.settings.tts.apiUrl)
+                    .onChange(async (value) => {
+                        this.plugin.settings.tts.apiUrl = value;
+                        await this.plugin.saveSettings();
+                    });
+                text.inputEl.addClass('ai-toolbar-full-width-input');
+            });
 
             new Setting(containerEl)
                 .setName(t('ttsApiKey'))
                 .setDesc(t('ttsApiKeyDesc'))
                 .addText(text => {
-                    text.setPlaceholder('sk-...')
+                    text.setPlaceholder(t('customLanguage'))
                         .setValue(this.plugin.settings.tts.apiKey)
                         .onChange(async (value) => {
                             this.plugin.settings.tts.apiKey = value;
@@ -172,15 +172,15 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             new Setting(containerEl)
                 .setName(t('voiceParams'))
                 .setDesc(t('voiceParamsDesc'))
-                .addText(text => {
-                    text.setPlaceholder('voiceId=juan1f')
-                        .setValue(this.plugin.settings.tts.voiceParams)
-                        .onChange(async (value) => {
-                            this.plugin.settings.tts.voiceParams = value;
-                            await this.plugin.saveSettings();
-                        });
-                    text.inputEl.addClass('ai-toolbar-full-width-input');
-                });
+            .addText(text => {
+                text.setPlaceholder(t('customLanguage'))
+                    .setValue(this.plugin.settings.tts.voiceParams)
+                    .onChange(async (value) => {
+                        this.plugin.settings.tts.voiceParams = value;
+                        await this.plugin.saveSettings();
+                    });
+                text.inputEl.addClass('ai-toolbar-full-width-input');
+            });
 
             new Setting(containerEl)
                 .setName(t('speechSpeed'))
@@ -202,7 +202,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             .setName(t('aiApiUrl'))
             .setDesc(t('aiApiUrlDesc'))
             .addText(text => text
-                .setPlaceholder('https://api.openai.com/v1/chat/completions')
+                .setPlaceholder(t('customLanguage'))
                 .setValue(this.plugin.settings.ai.apiUrl)
                 .onChange(async (value) => {
                     this.plugin.settings.ai.apiUrl = value;
@@ -213,7 +213,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             .setName(t('aiApiKey'))
             .setDesc(t('aiApiKeyDesc'))
             .addText(text => {
-                text.setPlaceholder('sk-...')
+                text.setPlaceholder(t('customLanguage'))
                     .setValue(this.plugin.settings.ai.apiKey)
                     .onChange(async (value) => {
                         this.plugin.settings.ai.apiKey = value;
@@ -226,7 +226,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             .setName(t('aiModel'))
             .setDesc(t('aiModelDesc'))
             .addText(text => text
-                .setPlaceholder('gpt-3.5-turbo')
+                .setPlaceholder(t('customLanguage'))
                 .setValue(this.plugin.settings.ai.model)
                 .onChange(async (value) => {
                     this.plugin.settings.ai.model = value;
@@ -273,7 +273,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
         
         const customInput = customTextContainer.createEl('input', {
             type: 'text',
-            placeholder: 'Enter custom language...',
+            placeholder: t('customLanguage'),
             cls: 'ai-toolbar-custom-input',
             value: (() => {
                 const currentValue = this.plugin.settings.ai.translateTargetLanguage;
@@ -282,10 +282,10 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             })()
         });
         
-        customInput.addEventListener('input', async (e) => {
+        customInput.addEventListener('input', (e) => {
             const target = e.target as HTMLInputElement;
             this.plugin.settings.ai.translateTargetLanguage = target.value;
-            await this.plugin.saveSettings();
+            void this.plugin.saveSettings();
         });
         
         // 初始化时检查是否显示自定义输入框
@@ -348,7 +348,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
         
         const explainCustomInput = explainCustomTextContainer.createEl('input', {
             type: 'text',
-            placeholder: 'Enter custom language...',
+            placeholder: t('customLanguage'),
             cls: 'ai-toolbar-custom-input',
             value: (() => {
                 const currentValue = this.plugin.settings.ai.explainOutputLanguage;
@@ -357,10 +357,10 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             })()
         });
         
-        explainCustomInput.addEventListener('input', async (e) => {
+        explainCustomInput.addEventListener('input', (e) => {
             const target = e.target as HTMLInputElement;
             this.plugin.settings.ai.explainOutputLanguage = target.value;
-            await this.plugin.saveSettings();
+            void this.plugin.saveSettings();
         });
         
         // 初始化时检查是否显示自定义输入框
@@ -423,7 +423,7 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
         
         const summaryCustomInput = summaryCustomTextContainer.createEl('input', {
             type: 'text',
-            placeholder: 'Enter custom language...',
+            placeholder: t('customLanguage'),
             cls: 'ai-toolbar-custom-input',
             value: (() => {
                 const currentValue = this.plugin.settings.ai.summaryOutputLanguage;
@@ -432,10 +432,10 @@ export class AISelectionToolbarSettingTab extends PluginSettingTab {
             })()
         });
         
-        summaryCustomInput.addEventListener('input', async (e) => {
+        summaryCustomInput.addEventListener('input', (e) => {
             const target = e.target as HTMLInputElement;
             this.plugin.settings.ai.summaryOutputLanguage = target.value;
-            await this.plugin.saveSettings();
+            void this.plugin.saveSettings();
         });
         
         // 初始化时检查是否显示自定义输入框

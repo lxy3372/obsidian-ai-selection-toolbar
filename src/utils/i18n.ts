@@ -89,6 +89,7 @@ export interface Locale {
     recognizing: string;
     phonetic: string;
     exampleSentences: string;
+    noExamples: string;
     notWordOrPhrase: string;
     copied: string;
     replaced: string;
@@ -195,6 +196,7 @@ export const locales: Record<string, Locale> = {
         recognizing: '正在识词...',
         phonetic: '音标',
         exampleSentences: '例句',
+        noExamples: '无可用例句',
         notWordOrPhrase: '⚠️ 选中的内容不符合识词规则（请选择单词、短语或成语）',
         copied: '✅ 已复制到剪贴板',
         replaced: '✅ 已替换原文',
@@ -210,86 +212,86 @@ export const locales: Record<string, Locale> = {
     },
     'en': {
         // Feature Toggles
-        featureToggles: '⚙️ Feature Toggles',
-        enableTTS: 'Enable Text-to-Speech',
+        featureToggles: '⚙️ Feature toggles',
+        enableTTS: 'Enable text-to-speech',
         enableTTSDesc: 'Enable text-to-speech feature when text is selected',
-        enableTranslate: 'Enable Translation',
+        enableTranslate: 'Enable translation',
         enableTranslateDesc: 'Enable translation feature when text is selected',
-        enableExplain: 'Enable AI Search',
+        enableExplain: 'Enable AI search',
         enableExplainDesc: 'Enable AI search feature when text is selected',
-        enableSummary: 'Enable Summary',
+        enableSummary: 'Enable summary',
         enableSummaryDesc: 'Enable summary feature when text is selected',
-        enableWordRecognition: 'Enable Word Recognition',
+        enableWordRecognition: 'Enable word recognition',
         enableWordRecognitionDesc: 'Enable word recognition feature when a word or phrase is selected (includes pronunciation and examples)',
         
         // TTS Settings
-        ttsSettings: '🔊 Text-to-Speech Settings',
-        ttsProvider: 'TTS Provider',
+        ttsSettings: '🔊 Text-to-speech settings',
+        ttsProvider: 'TTS provider',
         ttsProviderDesc: 'Choose between browser built-in speech or API service',
-        ttsProviderBrowser: 'Browser Built-in',
-        ttsProviderAPI: 'API Service',
+        ttsProviderBrowser: 'Browser built-in',
+        ttsProviderAPI: 'API service',
         ttsApiUrl: 'TTS API URL',
         ttsApiUrlDesc: 'TTS API endpoint (OpenAI format)',
-        ttsApiKey: 'TTS API Key',
+        ttsApiKey: 'TTS API key',
         ttsApiKeyDesc: 'Your TTS API key (optional, leave empty if not required)',
-        voiceParams: 'Voice Parameters',
+        voiceParams: 'Voice parameters',
         voiceParamsDesc: 'Custom voice parameters for GET request (e.g., voiceId=juan1f or voice=alloy&model=tts-1)',
-        speechSpeed: 'Speech Speed',
+        speechSpeed: 'Speech speed',
         speechSpeedDesc: 'Playback speed (0.25 to 4.0)',
-        browserVoice: 'Browser Voice',
+        browserVoice: 'Browser voice',
         browserVoiceDesc: 'Select browser built-in voice (leave empty for default)',
         browserPitch: 'Pitch',
         browserPitchDesc: 'Voice pitch (0.5 to 2.0, default 1.0)',
         
         // AI Settings
-        aiSettings: '🤖 AI Settings',
+        aiSettings: '🤖 AI settings',
         aiApiUrl: 'AI API URL',
         aiApiUrlDesc: 'AI API endpoint (OpenAI/Ollama format)',
-        aiApiKey: 'AI API Key',
+        aiApiKey: 'AI API key',
         aiApiKeyDesc: 'Your AI API key (leave empty for local models)',
-        aiModel: 'AI Model',
+        aiModel: 'AI model',
         aiModelDesc: 'Model name',
         
         // Translation Settings
         translation: '📝 Translation',
-        targetLanguage: 'Target Language',
+        targetLanguage: 'Target language',
         targetLanguageDesc: 'Select or enter custom language for translation',
         customLanguage: 'Custom...',
-        translationPromptTemplate: 'Translation Prompt Template',
+        translationPromptTemplate: 'Translation prompt template',
         translationPromptTemplateDesc: 'Use {{targetLanguage}} as placeholder',
         
         // Explanation Settings
         explanation: '💡 Explanation',
-        outputLanguage: 'Output Language',
+        outputLanguage: 'Output language',
         outputLanguageDesc: 'Select or enter custom language for explanations',
-        explanationPromptTemplate: 'Explanation Prompt Template',
+        explanationPromptTemplate: 'Explanation prompt template',
         explanationPromptTemplateDesc: 'Use {{outputLanguage}} as placeholder',
         
         // Summary Settings
         summary: '📄 Summary',
-        summaryOutputLanguage: 'Output Language',
+        summaryOutputLanguage: 'Output language',
         summaryOutputLanguageDesc: 'Select or enter custom language for summaries',
-        summaryPromptTemplate: 'Summary Prompt Template',
+        summaryPromptTemplate: 'Summary prompt template',
         summaryPromptTemplateDesc: 'Use {{outputLanguage}} as placeholder',
         
         // Word Recognition Settings
-        wordRecognition: '📖 Word Recognition',
-        wordRecognitionPromptTemplate: 'Word Recognition Prompt Template',
+        wordRecognition: '📖 Word recognition',
+        wordRecognitionPromptTemplate: 'Word recognition prompt template',
         wordRecognitionPromptTemplateDesc: 'Use {{word}} as placeholder, return JSON format with phonetic and examples',
         
         // Buttons
         read: 'Read',
         stop: 'Stop',
         translate: 'Translate',
-        aiSearch: 'AI Search',
-        summarize: 'Summary',
+        aiSearch: 'AI search',
+        summarize: 'Summarize',
         recognize: 'Recognize',
         pronounce: 'Pronounce',
         copy: 'Copy',
         replace: 'Replace',
-        appendToNote: 'Append to Note',
+        appendToNote: 'Append to note',
         refresh: 'Refresh',
-        insertBelow: 'Insert Below',
+        insertBelow: 'Insert below',
         
         // Messages
         loading: 'Loading...',
@@ -298,7 +300,8 @@ export const locales: Record<string, Locale> = {
         summarizing: 'Summarizing...',
         recognizing: 'Recognizing word...',
         phonetic: 'Phonetic',
-        exampleSentences: 'Example Sentences',
+        exampleSentences: 'Example sentences',
+        noExamples: 'No examples available',
         notWordOrPhrase: '⚠️ Selected content is not a word or phrase',
         copied: '✅ Copied to clipboard',
         replaced: '✅ Text replaced',

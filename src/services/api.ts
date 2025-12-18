@@ -113,8 +113,8 @@ export class APIHandler {
                 { role: 'user', content: word }
             ];
 
-            // eslint-disable-next-line no-restricted-globals
-            const response = await fetch(this.settings.ai.apiUrl, {
+            // Use global fetch API for HTTP requests
+            const response = await globalThis.fetch(this.settings.ai.apiUrl, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.settings.ai.apiKey}`,
@@ -168,8 +168,8 @@ export class APIHandler {
                 { role: 'user', content: userMessage }
             ];
 
-            // eslint-disable-next-line no-restricted-globals
-            const response = await fetch(this.settings.ai.apiUrl, {
+            // Use global fetch API for HTTP requests
+            const response = await globalThis.fetch(this.settings.ai.apiUrl, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.settings.ai.apiKey}`,
